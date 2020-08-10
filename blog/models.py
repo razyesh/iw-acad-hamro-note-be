@@ -25,7 +25,7 @@ class Blog(models.Model):
     category = models.ForeignKey(Category,on_delete = models.CASCADE)
     STATUS_CHOICES = (('Published','published'),('Draft','draft'))
     status = models.CharField(max_length = 10,default = 'Draft',choices = STATUS_CHOICES)
-    #user = models.ForiegnKey(User,on_delete = models.CASCADE)
+  #  user = models.ForiegnKey(User,on_delete = models.CASCADE)
     featured_image = models.ImageField()
     tags = models.ManyToManyField(Tag)
     created_at = models.DateTimeField(auto_now_add = True)
