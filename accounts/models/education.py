@@ -8,15 +8,24 @@ class College(models.Model):
     college_name = models.CharField(max_length=150)
     college_short_form = models.CharField(max_length=150, blank=True, null=True)
 
+    def __str__(self):
+        return self.college_short_form
+
 
 class University(models.Model):
     university_name = models.CharField(max_length=150)
     uni_short_form = models.CharField(max_length=150, blank=True, null=True)
 
+    def __str__(self):
+        return self.uni_short_form
+
 
 class Faculty(models.Model):
     faculty_name = models.CharField(max_length=150)
     fac_short_form = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.fac_short_form
 
 
 class Education(models.Model):
@@ -27,3 +36,7 @@ class Education(models.Model):
     college = models.ForeignKey(College, related_name='education_college', on_delete=models.PROTECT)
     faculty = models.ForeignKey(Faculty, related_name='education_faculty', on_delete=models.PROTECT)
     university = models.ForeignKey(University, related_name='education_University', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.semester + self.year
+
