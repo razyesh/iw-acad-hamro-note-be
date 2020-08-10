@@ -27,7 +27,11 @@ SYSTEM_APPS = [
     'accounts'
 ]
 
-INSTALLED_APPS = DJANGO_APPS + SYSTEM_APPS
+THIRD_PARTY_APPS = [
+    'rest_framework'
+]
+
+INSTALLED_APPS = DJANGO_APPS + SYSTEM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
