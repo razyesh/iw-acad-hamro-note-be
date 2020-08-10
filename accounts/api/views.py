@@ -6,10 +6,12 @@ from .serializers import UserRegisterSerializer
 
 
 class UserRegistrationView(CreateAPIView):
+    """API view for User Registration"""
     serializer_class = UserRegisterSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
+        """accepting post request and serializer validation"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
