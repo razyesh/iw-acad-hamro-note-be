@@ -8,9 +8,8 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserRegisterSerializer, UserProfileSerializer
-from accounts.models.profile import Profile
-from accounts.models.education import Education
+from .serializers import UserRegisterSerializer
+
 
 User = get_user_model()
 
@@ -49,6 +48,6 @@ class UserRegistrationView(CreateAPIView):
         status_code = status.HTTP_201_CREATED
         response = {
             'success': True,
-            'status_code': status_code
+            'message': "User successfully created"
         }
-        return Response(response)
+        return Response(response, status=status.HTTP_201_CREATED)
