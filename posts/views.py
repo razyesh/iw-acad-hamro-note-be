@@ -9,13 +9,17 @@ from .paginations import CustomPostsPagination, CustomCommentsPagination
 
 class ListPosts(ListAPIView):
     http_method_names = [u'get', ]
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = CustomPostsPagination
+
+    def get_queryset(self):
+        return  Post.objects.all()
 
 
 class ListComments(ListAPIView):
     http_method_names = [u'get', ]
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CustomCommentsPagination
+
+    def get_queryset(self):
+        return Comment.objects.all()
