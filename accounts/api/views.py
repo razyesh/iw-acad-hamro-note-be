@@ -1,8 +1,39 @@
+from django.contrib.auth import get_user_model
+from django.core import serializers
+
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializers import UserRegisterSerializer
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from .serializers import UserRegisterSerializer, UserProfileSerializer
+from accounts.models.profile import Profile
+from accounts.models.education import Education
+
+User = get_user_model()
+
+
+class UserDetail(RetrieveAPIView):
+    """
+    API end point to retrieve the user object
+    who is currently active
+    """
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        """
+        returns the user detail
+        :return: JSON response of user detail
+        """
+        user = User.objects.get(id=request.user.id)
+        user_data = UserRegisterSerializer(user)
+        context = {
+            "user": user_data.data
+        }
+        return Response(context)
 
 
 class UserRegistrationView(CreateAPIView):
