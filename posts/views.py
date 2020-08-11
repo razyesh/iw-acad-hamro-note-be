@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from rest_framework.generics import ListAPIView
 
 from .models import Post, Comment
@@ -8,6 +6,9 @@ from .paginations import CustomPostsPagination, CustomCommentsPagination
 
 
 class ListPosts(ListAPIView):
+    """
+    This view is paginated to return a list of 15 posts at a time.
+    """
     http_method_names = [u'get', ]
     serializer_class = PostSerializer
     pagination_class = CustomPostsPagination
@@ -17,6 +18,9 @@ class ListPosts(ListAPIView):
 
 
 class ListComments(ListAPIView):
+    """
+    This view returns gives the five comments at a time.
+    """
     http_method_names = [u'get', ]
     serializer_class = CommentSerializer
     pagination_class = CustomCommentsPagination
