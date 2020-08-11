@@ -48,10 +48,15 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         required=True,
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
+    confirm_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password', 'placeholder': 'Confirm_Password'}
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'profile')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'confirm_password', 'profile')
 
     def create(self, validated_data):
         """creating profile and education on creating user"""
@@ -74,3 +79,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             education=education
         )
         return user
+
+    def validate(self, data):
+        password = data['password']
+        confirm_password = data['confirm_password']
+
+        if password != confirm_password:
+            raise serializers.ValidationError("password doesnot match")
+        return data
