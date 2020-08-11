@@ -10,7 +10,10 @@ from accounts.api.serializers import EducationSerializer
 User = get_user_model()
 
 
-class UserTests(APITestCase):
+class UserRegisterTests(APITestCase):
+    """
+    api test for registering user
+    """
 
     def setUp(self):
         """
@@ -73,6 +76,11 @@ class UserTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
+
+
+class UserLoginTests(APITestCase):
+    def setup(self):
+
 
 
 
