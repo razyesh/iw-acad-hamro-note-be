@@ -1,3 +1,25 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
-# Create your models here.
+USER = get_user_model()
+
+
+class Post:
+    posted_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=False)
+    user = models.ForeignKey(USER, on_delete=models.CASCADE)
+    post_slug = models.SlugField()
+    caption = models.TextField()
+    file = models.FileField(upload_to='posts/files/', blank=True, null=True)
+    stars_count = models.IntegerField(default=0)
+
+
+class Comment(models.Model):
+    commented_at = models.DateTimeField(auto_now_add=True)
+    comment_modified_at = models.DateTimeField(auto_now=True)
+    comment_description = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(USER, on_delete=models.CASCADE)
+    stars_count = models.IntegerField(default=0)
+
+
