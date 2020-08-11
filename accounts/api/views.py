@@ -16,6 +16,7 @@ from .serializers import (UserRegisterSerializer,
 from accounts.models.profile import Profile
 from accounts.models.education import Education
 
+
 User = get_user_model()
 
 
@@ -37,6 +38,10 @@ class UserDetail(RetrieveAPIView):
         return Response(user_data.data)
 
 class UserUpdate(UpdateAPIView):
+    """
+    API end point to update the user object
+    who is currently active
+    """
     authentication_classes = [TokenAuthentication, ]
     permission_classes = [IsAuthenticated, ]
     serializer_class = UserUpdateSerializer
@@ -63,6 +68,6 @@ class UserRegistrationView(CreateAPIView):
         status_code = status.HTTP_201_CREATED
         response = {
             'success': True,
-            'status_code': status_code
+            'message': "User successfully created"
         }
-        return Response(response)
+        return Response(response, status=status.HTTP_201_CREATED)
