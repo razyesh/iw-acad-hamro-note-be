@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 USER = get_user_model()
 
 
-class Post:
+class Post(models.Model):
     posted_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=False)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
