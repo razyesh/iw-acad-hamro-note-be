@@ -2,13 +2,11 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from .models import Blog,Category
 
-User = get_user_model()
-
 class BlogTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         # create a user
-        testuser1 = User.objects.create_user(
+        testuser1 = get_user_model().objects.create_user(
             username = 'testuser1',
             email = 'test@gmail.com',
             password = '123456789'
@@ -36,6 +34,7 @@ class BlogTests(TestCase):
         content = f'{post.content}'
         
         self.assertEqual(user,'testuser1','test@gmail.com')
+        self.assertTrue(user,'1234567890')
         self.assertEqual(title,'New Blog title')
         self.assertEqual(subtitle,'simple title')
         self.assertEqual(meta_description,' a web app blog testing haha')
