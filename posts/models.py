@@ -6,7 +6,7 @@ USER = get_user_model()
 
 class Post(models.Model):
     posted_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=False)
+    modified_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
     post_slug = models.SlugField()
     caption = models.TextField()
@@ -28,3 +28,5 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment_description[:20] + '...'
 
+
+# {'user': 1, 'post_slug': 'post-1', 'caption': 'Hey check out my new notes on django rest frameworks.'}
