@@ -13,6 +13,9 @@ class Post:
     file = models.FileField(upload_to='posts/files/', blank=True, null=True)
     stars_count = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.caption[:20] + '...'
+
 
 class Comment(models.Model):
     commented_at = models.DateTimeField(auto_now_add=True)
@@ -22,4 +25,6 @@ class Comment(models.Model):
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
     stars_count = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.comment_description[:20] + '...'
 
