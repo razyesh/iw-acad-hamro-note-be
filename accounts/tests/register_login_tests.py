@@ -80,6 +80,7 @@ class UserRegisterTests(APITestCase):
 
 class UserLoginTests(APITestCase):
     def setup(self):
+        pass
 
 
 
