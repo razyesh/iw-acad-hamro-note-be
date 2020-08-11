@@ -29,4 +29,3 @@ class Comment(models.Model):
         return self.comment_description[:20] + '...'
 
 
-# {'user': 1, 'post_slug': 'post-1', 'caption': 'Hey check out my new notes on django rest frameworks.'}
