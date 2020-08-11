@@ -1,20 +1,16 @@
 from django.contrib.auth import get_user_model
-from django.core import serializers
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import (CreateAPIView,
-                                        RetrieveAPIView,
-                                        UpdateAPIView)
+                                     RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import (UserRegisterSerializer,
-                             UserProfileSerializer,
-                             UserUpdateSerializer)
-from accounts.models.profile import Profile
-from accounts.models.education import Education
+                          UserUpdateSerializer)
 
 
 User = get_user_model()
@@ -35,7 +31,8 @@ class UserDetail(RetrieveAPIView):
         """
         user = User.objects.get(id=request.user.id)
         user_data = UserRegisterSerializer(user)
-        return Response(user_data.data)
+        return Response(user_data.data, status=status.HTTP_302_FOUND)
+
 
 class UserUpdate(UpdateAPIView):
     """
@@ -47,12 +44,14 @@ class UserUpdate(UpdateAPIView):
     serializer_class = UserUpdateSerializer
 
     def update(self, request, *args, **kwargs):
+        """partially updating the user"""
+
         partial = kwargs.pop('partial', False)
-        instance = User.objects.get(id = request.user.id)
+        instance = User.objects.get(id=request.user.id)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserRegistrationView(CreateAPIView):
@@ -65,7 +64,6 @@ class UserRegistrationView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        status_code = status.HTTP_201_CREATED
         response = {
             'success': True,
             'message': "User successfully created"

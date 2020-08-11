@@ -58,13 +58,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'username',
-             'email',
-              'first_name',
-               'last_name', 
-               'password',
-                'confirm_password',
-                 'profile'
-                 )
+            'email',
+            'first_name',
+            'last_name',
+            'password',
+            'confirm_password',
+            'profile'
+        )
 
     def create(self, validated_data):
         """creating profile and education on creating user"""
@@ -97,7 +97,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class UserUpdateSerializer(serializers.ModelSerializer):
     """
     serializer for updating user with valid
@@ -105,7 +104,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     """
 
     profile = UserProfileSerializer()
-  
 
     class Meta:
         model = User
@@ -115,14 +113,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         """updating profile and education while updating user"""
 
         profile_data = validated_data.pop('profile')
-        instance.username= validated_data['username']
+        instance.username = validated_data['username']
         instance.email = validated_data['email']
         instance.first_name = validated_data['first_name']
         instance.last_name = validated_data['last_name']
         education_data = profile_data.pop('education')
-        profile_instance = Profile.objects.get(user= instance)
-        profile_instance.contact_number=profile_data['contact_number']
-        profile_instance.address=profile_data['address']
+        profile_instance = Profile.objects.get(user=instance)
+        profile_instance.contact_number = profile_data['contact_number']
+        profile_instance.address = profile_data['address']
         profile_instance.education.semester = education_data['semester']
         profile_instance.education.year = education_data['year']
         profile_instance.education.faculty = education_data['faculty']

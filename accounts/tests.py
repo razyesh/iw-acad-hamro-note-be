@@ -13,6 +13,10 @@ User = get_user_model()
 class UserTests(APITestCase):
 
     def setUp(self):
+        """
+        setting up education as it is
+        required while registering user
+        """
         self.college = self.setup_college()
         self.university = self.setup_university()
         self.faculty = self.setup_faculty()
