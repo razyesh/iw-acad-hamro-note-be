@@ -56,7 +56,15 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'confirm_password', 'profile')
+        fields = (
+            'username',
+             'email',
+              'first_name',
+               'last_name', 
+               'password',
+                'confirm_password',
+                 'profile'
+                 )
 
     def create(self, validated_data):
         """creating profile and education on creating user"""
@@ -87,3 +95,39 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password != confirm_password:
             raise serializers.ValidationError("password doesnot match")
         return data
+
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    """
+    serializer for updating user with valid
+    profile and education
+    """
+
+    profile = UserProfileSerializer()
+  
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'profile')
+
+    def update(self, instance, validated_data):
+        """updating profile and education while updating user"""
+
+        profile_data = validated_data.pop('profile')
+        instance.username= validated_data['username']
+        instance.email = validated_data['email']
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        education_data = profile_data.pop('education')
+        profile_instance = Profile.objects.get(user= instance)
+        profile_instance.contact_number=profile_data['contact_number']
+        profile_instance.address=profile_data['address']
+        profile_instance.education.semester = education_data['semester']
+        profile_instance.education.year = education_data['year']
+        profile_instance.education.faculty = education_data['faculty']
+        profile_instance.education.university = education_data['university']
+        profile_instance.education.college = education_data['college']
+        profile_instance.save()
+        instance.save()
+        return instance

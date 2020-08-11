@@ -4,11 +4,15 @@ from django.core import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import (CreateAPIView,
+                                        RetrieveAPIView,
+                                        UpdateAPIView)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserRegisterSerializer, UserProfileSerializer
+from .serializers import (UserRegisterSerializer,
+                             UserProfileSerializer,
+                             UserUpdateSerializer)
 from accounts.models.profile import Profile
 from accounts.models.education import Education
 
@@ -30,10 +34,20 @@ class UserDetail(RetrieveAPIView):
         """
         user = User.objects.get(id=request.user.id)
         user_data = UserRegisterSerializer(user)
-        context = {
-            "user": user_data.data
-        }
-        return Response(context)
+        return Response(user_data.data)
+
+class UserUpdate(UpdateAPIView):
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = UserUpdateSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = User.objects.get(id = request.user.id)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 
 class UserRegistrationView(CreateAPIView):
