@@ -1,5 +1,5 @@
 from rest_framework.authtoken.views import ObtainAuthToken
-from .authtoken_serializer import AuthTokenSerializer
+from .authtoken_serializer import CustomAuthTokenSerializer
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -7,4 +7,4 @@ class CustomObtainAuthToken(ObtainAuthToken):
     overriding default serializer class
     of ObtainAuthToken
     """
-    serializer_class = AuthTokenSerializer
+    serializer_class = CustomAuthTokenSerializer
