@@ -65,7 +65,7 @@ $ python manage.py runserver
 
 > Make sure, you know to create superuser for administration
 
-### Step 4: Running tests with coverage
+### Step 5: Running tests with coverage
 
 ```sh
 $ python manage.py test coverage
