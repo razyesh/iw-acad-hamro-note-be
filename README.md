@@ -64,3 +64,12 @@ $ python manage.py test coverage
 ## License
 
 Licensed under the [MIT License](./LICENSE).
+
+## Acknowledgements and Credits
+
+- Aju Tamang: [Aju100](https://github.com/aju100)
+- Anjal Bam: [AnjalBam](https://github.com/AnjalBam)
+- Rajesh Pandey: [rajeshpandey2053](https://github.com/rajeshpandey2053)
+- Rajesh Pudasaini: [razyesh](https://github.com/razyesh)
+
+> Names are sorted by Alphabet
