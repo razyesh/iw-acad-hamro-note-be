@@ -1,10 +1,10 @@
 from rest_framework.generics import (ListAPIView, CreateAPIView,
                                      RetrieveUpdateAPIView, DestroyAPIView)
 
-from .models import Post, Comment
-from .serializers import (PostSerializer, CommentSerializer,
-                          CreatePostSerializer)
-from .paginations import CustomPostsPagination, CustomCommentsPagination
+from ..models import Post, Comment
+from ..serializers import (PostSerializer, CommentSerializer,
+                           CreatePostSerializer)
+from ..paginations import CustomPostsPagination, CustomCommentsPagination
 
 
 class ListPosts(ListAPIView):
@@ -19,23 +19,17 @@ class ListPosts(ListAPIView):
         return Post.objects.all()
 
 
-class ListComments(ListAPIView):
-    """
-    This view returns gives the five comments at a time.
-    """
-    http_method_names = [u'get', ]
-    serializer_class = CommentSerializer
-    pagination_class = CustomCommentsPagination
-
-    def get_queryset(self):
-        return Comment.objects.all()
-
-
 class CreatePost(CreateAPIView):
+    """
+    Creates a New Post
+    """
     serializer_class = CreatePostSerializer
 
 
 class RetrieveUpdatePost(RetrieveUpdateAPIView):
+    """
+    Retrieves and updates a new post with post_slug as url kwarg.
+    """
     lookup_field = 'post_slug'
     lookup_url_kwarg = 'post_slug'
     serializer_class = CreatePostSerializer
@@ -45,9 +39,11 @@ class RetrieveUpdatePost(RetrieveUpdateAPIView):
 
 
 class DeletePost(DestroyAPIView):
+    """
+    Deletes the post with matching post_slug in url kwarg.
+    """
     lookup_field = 'post_slug'
     serializer_class = PostSerializer
 
     def get_queryset(self):
         return Post.objects.all()
-
