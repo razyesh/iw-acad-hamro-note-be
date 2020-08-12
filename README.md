@@ -4,7 +4,7 @@
  <!-- <img width="100px" src="https://res.cloudinary.com/dhu3zenko/image/upload
  /v1597226777/Hamronotes/logo_vszykh.png" align="center" alt="Hamro Notes
  " /> -->
- <img width="100px" src="./assets/Logo890x180.svg" align="center" alt="Hamro Notes
+ <img width="400px" src="./assets/Logo890x180.svg" align="center" alt="Hamro Notes
  " />
 <p align="center">Get your necessary Univeristy Notes</p>
 
