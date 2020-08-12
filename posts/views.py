@@ -35,6 +35,7 @@ class CreatePost(CreateAPIView):
 
 
 class RetrieveUpdatePost(RetrieveUpdateAPIView):
+    lookup_field = 'post_slug'
     lookup_url_kwarg = 'post_slug'
     serializer_class = CreatePostSerializer
 
