@@ -4,7 +4,11 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 
-class AuthTokenSerializer(serializers.Serializer):
+class CustomAuthTokenSerializer(serializers.Serializer):
+    """
+    Creating customAuthTokenSerializer to login and generate token from emailaddress ,
+    in default authtokenserializer that was done through username
+    """
     email = serializers.EmailField(label=_("Email"))
     password = serializers.CharField(
         label=_("Password"),

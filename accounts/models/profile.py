@@ -13,4 +13,4 @@ class Profile(models.Model):
     education = models.ForeignKey(Education, related_name='profile_education', on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.contact_number
+        return self.user.username
