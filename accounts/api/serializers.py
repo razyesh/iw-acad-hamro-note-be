@@ -32,7 +32,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             'contact_number',
             'address',
-            'education'
+            'education',
         ]
 
 
@@ -104,23 +104,24 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     """
 
     profile = UserProfileSerializer()
+    profile_pic = serializers.FileField()
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('username', 'email', 'first_name', 'last_name', 'profile_pic', 'profile')
 
     def update(self, instance, validated_data):
         """updating profile and education while updating user"""
-
         profile_data = validated_data.pop('profile')
+        education_data = profile_data.pop('education')
         instance.username = validated_data['username']
         instance.email = validated_data['email']
         instance.first_name = validated_data['first_name']
         instance.last_name = validated_data['last_name']
-        education_data = profile_data.pop('education')
         profile_instance = Profile.objects.get(user=instance)
         profile_instance.contact_number = profile_data['contact_number']
         profile_instance.address = profile_data['address']
+        profile_instance.profile_pic = validated_data['profile_pic']
         profile_instance.education.semester = education_data['semester']
         profile_instance.education.year = education_data['year']
         profile_instance.education.faculty = education_data['faculty']
