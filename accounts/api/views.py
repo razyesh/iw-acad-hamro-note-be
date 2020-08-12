@@ -50,6 +50,7 @@ class UserUpdate(UpdateAPIView):
         instance = User.objects.get(id=request.user.id)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.profile_pic = request.FILES.get('profile_pic')
+        print(request.FILES)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
