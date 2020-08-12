@@ -26,30 +26,24 @@ DJANGO_APPS = [
 ]
 
 SYSTEM_APPS = [
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
-<<<<<<< HEAD:backend/settings.py
-    # third party apps
-    'rest_framework',
-=======
-    'posts',
+    'posts.apps.PostConfig',
 ]
->>>>>>> f90bd630ab6adc41d925f6ce3731a39351ae7f4f:backend/settings/base.py
 
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken'
 ]
 
-<<<<<<< HEAD:backend/settings.py
+INSTALLED_APPS = DJANGO_APPS + SYSTEM_APPS + THIRD_PARTY_APPS
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
     'rest_framework.permissions.AllowAny',
     ]
 }
-=======
-INSTALLED_APPS = DJANGO_APPS + SYSTEM_APPS + THIRD_PARTY_APPS
->>>>>>> f90bd630ab6adc41d925f6ce3731a39351ae7f4f:backend/settings/base.py
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
