@@ -10,7 +10,7 @@ from accounts.api.serializers import EducationSerializer
 User = get_user_model()
 
 
-class UserRegisterTests(APITestCase):
+class UserTests(APITestCase):
     """
     api test for registering user
     """
@@ -77,10 +77,80 @@ class UserRegisterTests(APITestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
 
+    def test_user_retrieve(self):
+        data = {
+            "username": "testUser",
+            "email": "testuser@gmail.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "1234",
+            "confirm_password": "1234",
+            "profile": {
+                "user": 1,
+                "contact_number": "9860476499",
+                "address": "kapan",
+                "education": self.education
+            }
+        }
+        response = self.client.post(self.url, data=data, format='json')
+        login_data = {
+            "email" : "testuser@gmail.com",
+            "password" : "1234"
+        }
+        login_response = self.client.post(reverse("account:user-login"),login_data, format = "json")
+        token = login_response.data['token']
 
-class UserLoginTests(APITestCase):
-    def setup(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.get(reverse("account:user-profile"))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.data['email'], "testuser@gmail.com")
+
+    def test_user_update(self):
+        data = {
+            "username": "testUser",
+            "email": "testuser@gmail.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "1234",
+            "confirm_password": "1234",
+            "profile": {
+                "user": 1,
+                "contact_number": "9860476499",
+                "address": "kapan",
+                "education": self.education
+            }
+        }
+        update_data = {
+            "username": "testnotUser",
+            "email": "testuser@gmail.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "1234",
+            "confirm_password": "1234",
+            "profile": {
+                "user": 1,
+                "contact_number": "9860476499",
+                "address": "kapan",
+                "education": self.education
+            }
+        }
+        response = self.client.post(self.url, data=data, format='json')
+        login_data = {
+            "email" : "testuser@gmail.com",
+            "password" : "1234"
+        }
+        login_response = self.client.post(reverse("account:user-login"),login_data, format = "json")
+        token = login_response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.put(reverse("account:user-update"),update_data,format = 'json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['username'], "testnotUser")
+        self.assertNotEqual(response.data['username'], "testUser")
+
+    def test_user_login(self):
         pass
+
 
 
 
