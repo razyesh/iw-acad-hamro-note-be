@@ -1,7 +1,8 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 
 from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import (PostSerializer, CommentSerializer,
+                          CreatePostSerializer)
 from .paginations import CustomPostsPagination, CustomCommentsPagination
 
 
@@ -14,7 +15,7 @@ class ListPosts(ListAPIView):
     pagination_class = CustomPostsPagination
 
     def get_queryset(self):
-        return  Post.objects.all()
+        return Post.objects.all()
 
 
 class ListComments(ListAPIView):
@@ -27,3 +28,7 @@ class ListComments(ListAPIView):
 
     def get_queryset(self):
         return Comment.objects.all()
+
+
+class CreatePost(CreateAPIView):
+    serializer_class = CreatePostSerializer
