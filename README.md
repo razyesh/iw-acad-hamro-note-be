@@ -49,12 +49,18 @@ $ source bin/activate
 $ pip install -r requirements.txt
 ```
 
-### Step 3: Configure
+### Step 3: Configure env variables
+```sh 
+$ cp .env.examle .env
+```
+Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
+
+### Step 4: Configure
 
 ```sh
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py runserver
 ```
 
 > Make sure, you know to create superuser for administration
