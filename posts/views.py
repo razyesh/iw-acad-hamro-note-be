@@ -1,4 +1,5 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import (ListAPIView, CreateAPIView,
+                                     RetrieveUpdateAPIView, DestroyAPIView)
 
 from .models import Post, Comment
 from .serializers import (PostSerializer, CommentSerializer,
@@ -38,6 +39,14 @@ class RetrieveUpdatePost(RetrieveUpdateAPIView):
     lookup_field = 'post_slug'
     lookup_url_kwarg = 'post_slug'
     serializer_class = CreatePostSerializer
+
+    def get_queryset(self):
+        return Post.objects.all()
+
+
+class DeletePost(DestroyAPIView):
+    lookup_field = 'post_slug'
+    serializer_class = PostSerializer
 
     def get_queryset(self):
         return Post.objects.all()
