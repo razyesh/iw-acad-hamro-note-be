@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 
 from accounts.models.education import College, University, Faculty, Education
 from accounts.api.serializers import EducationSerializer
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -40,6 +41,10 @@ class UserTests(APITestCase):
             }
         }
         self.response = self.client.post(self.url, data=self.data, format='json')
+        self.login_data = {
+            "email": "testuser@gmail.com",
+            "password": "1234"
+        }
 
     def setup_education(self):
         return Education.objects.create(semester=1, year=2,
@@ -78,11 +83,12 @@ class UserTests(APITestCase):
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
 
     def test_user_retrieve(self):
-        login_data = {
-            "email": "testuser@gmail.com",
-            "password": "1234"
-        }
-        login_response = self.client.post(reverse("account:user-login"), data=login_data, format="json")
+        """
+        perform test to get the detail about the currently logged
+        in user
+        :return:
+        """
+        login_response = self.client.post(reverse("account:user-login"), data=self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
@@ -91,13 +97,15 @@ class UserTests(APITestCase):
         self.assertEqual(response.data['email'], "testuser@gmail.com")
 
     def test_user_update(self):
+        """
+        performing test to update the user detail
+        :return:
+        """
         update_data = {
             "username": "testnotUser",
-            "email": "testuser@gmail.com",
+            "email": "testnotuser@gmail.com",
             "first_name": "Test",
             "last_name": "User",
-            "password": "1234",
-            "confirm_password": "1234",
             "profile": {
                 "user": 1,
                 "contact_number": "9860476499",
@@ -105,12 +113,7 @@ class UserTests(APITestCase):
                 "education": self.education
             }
         }
-        response = self.client.post(self.url, data=self.data, format='json')
-        login_data = {
-            "email": "testuser@gmail.com",
-            "password": "1234"
-        }
-        login_response = self.client.post(reverse("account:user-login"), login_data, format="json")
+        login_response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
@@ -120,4 +123,13 @@ class UserTests(APITestCase):
         self.assertNotEqual(response.data['username'], "testUser")
 
     def test_user_login(self):
-        pass
+        """
+        performing test whether the token is generated or not
+        after successful login of user
+        :return:
+        """
+        response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
+        token = response.data.get('token')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Token.objects.count(), 1)
+        self.assertEqual(Token.objects.get().key, token)
