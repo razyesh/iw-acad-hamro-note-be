@@ -8,7 +8,7 @@ class Post(models.Model):
     posted_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
-    post_slug = models.SlugField()
+    post_slug = models.SlugField(unique=True)
     caption = models.TextField()
     file = models.FileField(upload_to='posts/files/', blank=True, null=True)
     stars_count = models.IntegerField(default=0)
