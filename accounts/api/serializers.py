@@ -104,7 +104,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     """
 
     profile = UserProfileSerializer()
-    profile_pic = serializers.FileField()
+    profile_pic = serializers.FileField(required=False)
 
     class Meta:
         model = User
@@ -121,7 +121,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         profile_instance = Profile.objects.get(user=instance)
         profile_instance.contact_number = profile_data['contact_number']
         profile_instance.address = profile_data['address']
-        profile_instance.profile_pic = validated_data['profile_pic']
+        profile_instance.profile_pic = validated_data.get('profile_pic')
         profile_instance.education.semester = education_data['semester']
         profile_instance.education.year = education_data['year']
         profile_instance.education.faculty = education_data['faculty']
