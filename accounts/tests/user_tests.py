@@ -25,6 +25,7 @@ class UserTests(APITestCase):
         self.university = self.setup_university()
         self.faculty = self.setup_faculty()
         self.url = reverse('account:user-register')
+        self.login_url = reverse('account:user-login')
         self.education = EducationSerializer(self.setup_education()).data
         self.data = {
             "username": "testUser",
@@ -88,7 +89,7 @@ class UserTests(APITestCase):
         in user
         :return:
         """
-        login_response = self.client.post(reverse("account:user-login"), data=self.login_data, format="json")
+        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
@@ -115,6 +116,7 @@ class UserTests(APITestCase):
         }
         files = {'media': open('accounts/tests/1.png', 'rb')}
         login_response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
+        login_response = self.client.post(self.login_url, self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
@@ -130,7 +132,7 @@ class UserTests(APITestCase):
         after successful login of user
         :return:
         """
-        response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
+        response = self.client.post(self.login_url, self.login_data, format="json")
         token = response.data.get('token')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Token.objects.count(), 1)
