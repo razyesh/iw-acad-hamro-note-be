@@ -1,5 +1,10 @@
+import uuid
+
+from django.utils.text import slugify
 from rest_framework.generics import (ListAPIView, CreateAPIView,
                                      UpdateAPIView, RetrieveDestroyAPIView)
+from rest_framework.response import Response
+from rest_framework import status
 
 from ..models import Post
 from ..serializers import (PostSerializer, CreatePostSerializer)
@@ -23,6 +28,22 @@ class CreatePost(CreateAPIView):
     Creates a New Post
     """
     serializer_class = CreatePostSerializer
+
+    def create(self, request, *args, **kwargs):
+        """
+        The original function overridden so that the post slug is generated
+        automatically and is unique.
+        """
+        data = request.data.copy()
+        # copying the dict because the original QueryDict is immutable.
+
+        data['post_slug'] = f'{slugify(data["caption"][:10])}-{uuid.uuid4().hex}'
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 
 class UpdatePost(UpdateAPIView):
