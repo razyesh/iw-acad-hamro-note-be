@@ -34,6 +34,7 @@ class Blog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     featured_image = models.ImageField()
     tags = models.ManyToManyField(Tag)
+    stars_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.DateTimeField(default=timezone.now)
@@ -50,7 +51,9 @@ class Comment(models.Model):
     name = models.CharField(max_length=120)
     email = models.EmailField(unique=True)
     message = models.TextField()
+    stars_count = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
+    
 
     def __str__(self):
         return self.name

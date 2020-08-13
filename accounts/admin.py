@@ -1,11 +1,5 @@
 from django.contrib import admin
-
-from .models import User
-from .models import Profile
-from .models import Education
-from .models import University
-from .models import Faculty
-from .models import College
+from .models import User, Profile, Education, University, Faculty, College
 
 admin.site.register(User)
 admin.site.register(Profile)

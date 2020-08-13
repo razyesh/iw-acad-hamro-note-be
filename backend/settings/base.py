@@ -25,8 +25,9 @@ DJANGO_APPS = [
 ]
 
 SYSTEM_APPS = [
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
+    'posts.apps.PostsConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -35,6 +36,7 @@ THIRD_PARTY_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + SYSTEM_APPS + THIRD_PARTY_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
