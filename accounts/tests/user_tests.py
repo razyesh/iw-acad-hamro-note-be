@@ -117,6 +117,7 @@ class UserTests(APITestCase):
         login_response = self.client.post(self.login_url, self.login_data, format="json")
         files = {'media': open('accounts/tests/1.png', 'rb')}
         login_response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
+        login_response = self.client.post(self.login_url, self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)

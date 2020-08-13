@@ -1,8 +1,10 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
+User = get_user_model()
 
 class CustomAuthTokenSerializer(serializers.Serializer):
     """
@@ -15,6 +17,9 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         style={'input_type': 'password'},
         trim_whitespace=False
     )
+
+    class Meta:
+        fields = ['email', 'password']
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -30,6 +35,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
+
         else:
             msg = _('Must include "email" and "password".')
             raise serializers.ValidationError(msg, code='authorization')
