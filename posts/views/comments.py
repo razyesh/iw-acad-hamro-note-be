@@ -1,4 +1,7 @@
 from .posts import *
+from ..models import Comment
+from ..serializers import CommentSerializer
+from ..paginations import CustomCommentsPagination
 
 
 class ListComments(ListAPIView):
@@ -12,4 +15,3 @@ class ListComments(ListAPIView):
     def get_queryset(self):
         return Comment.objects.all()
 
-list

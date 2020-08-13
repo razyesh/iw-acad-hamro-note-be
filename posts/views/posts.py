@@ -1,10 +1,9 @@
 from rest_framework.generics import (ListAPIView, CreateAPIView,
-                                     RetrieveUpdateAPIView, DestroyAPIView)
+                                     UpdateAPIView, RetrieveDestroyAPIView)
 
-from ..models import Post, Comment
-from ..serializers import (PostSerializer, CommentSerializer,
-                           CreatePostSerializer)
-from ..paginations import CustomPostsPagination, CustomCommentsPagination
+from ..models import Post
+from ..serializers import (PostSerializer, CreatePostSerializer)
+from ..paginations import CustomPostsPagination
 
 
 class ListPosts(ListAPIView):
@@ -26,7 +25,7 @@ class CreatePost(CreateAPIView):
     serializer_class = CreatePostSerializer
 
 
-class RetrieveUpdatePost(RetrieveUpdateAPIView):
+class UpdatePost(UpdateAPIView):
     """
     Retrieves and updates a new post with post_slug as url kwarg.
     """
@@ -38,7 +37,7 @@ class RetrieveUpdatePost(RetrieveUpdateAPIView):
         return Post.objects.all()
 
 
-class DeletePost(DestroyAPIView):
+class RetrieveDeletePost(RetrieveDestroyAPIView):
     """
     Deletes the post with matching post_slug in url kwarg.
     """
