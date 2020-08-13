@@ -28,7 +28,7 @@ DJANGO_APPS = [
 SYSTEM_APPS = [
     'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
-    'posts.apps.PostConfig',
+    'posts.apps.PostsConfig',
 ]
 
 THIRD_PARTY_APPS = [
