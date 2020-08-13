@@ -21,12 +21,12 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 
 from .utils import Util
-from .serializers import (UserRegisterSerializer, 
-                            UserUpdateSerializer, 
-                            ChangePasswordSerializer,
-                            ResetPasswordEmailRequestSerializer, 
-                            SetNewPasswordSerializer
-                            )
+from .serializers import (UserRegisterSerializer,
+                          UserUpdateSerializer,
+                          ChangePasswordSerializer,
+                          ResetPasswordEmailRequestSerializer,
+                          SetNewPasswordSerializer
+                          )
 from .tokens import account_activation_token
 
 User = get_user_model()
@@ -188,21 +188,21 @@ class RequestPasswordResetEmail(GenericAPIView):
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(request=request).domain
             relativeLink = reverse(
-                                'accounts:password-reset-confirm', 
-                                kwargs={'uidb64': uidb64, 'token': token}
-                                )
-            absurl = 'http://'+current_site + relativeLink
+                'accounts:password-reset-confirm',
+                kwargs={'uidb64': uidb64, 'token': token}
+            )
+            absurl = 'http://' + current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + absurl
             data = {
-                'email_body': email_body, 
+                'email_body': email_body,
                 'to_email': user.email,
                 'email_subject': 'Reset your passsword'
-                }
+            }
             Util.send_email(data)
         return Response(
-                    {'success': 'We have sent you a link to reset your password'},
-                    status=status.HTTP_200_OK
-                    )
+            {'success': 'We have sent you a link to reset your password'},
+            status=status.HTTP_200_OK
+        )
 
 
 class PasswordTokenCheckAPI(GenericAPIView):
@@ -214,26 +214,26 @@ class PasswordTokenCheckAPI(GenericAPIView):
             user = User.objects.get(id=id)
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response(
-                    {'error': 'Token is not valid, please request a new one'}, 
+                    {'error': 'Token is not valid, please request a new one'},
                     status=status.HTTP_401_UNAUTHORIZED
-                    )
+                )
 
             return Response(
                 {
-                    'success': True, 
-                    'message': 'Credentials Valid', 
-                    'uidb64': uidb64, 
+                    'success': True,
+                    'message': 'Credentials Valid',
+                    'uidb64': uidb64,
                     'token': token
-                }, 
+                },
                 status=status.HTTP_200_OK
-                )
+            )
 
         except DjangoUnicodeDecodeError:
-            if not PasswordResetTokenGenerator().check_token(user,token):
+            if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response(
                     {'error': 'Token is not valid, please request a new one'},
                     status=status.HTTP_401_UNAUTHORIZED
-                    )
+                )
 
 
 class SetNewPasswordAPIView(GenericAPIView):
@@ -243,6 +243,6 @@ class SetNewPasswordAPIView(GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(
-            {'success': True, 'message': 'Password reset success'}, 
+            {'success': True, 'message': 'Password reset success'},
             status=status.HTTP_200_OK
-            )
+        )
