@@ -9,7 +9,7 @@ user_url = [
     path('activate/<uidb64>/<token>', activate, name='user-activate'),
     path('change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('request-reset-password/', RequestPasswordResetEmail.as_view(), name='request-reset-email'),
-    path('reset-password/<uidb64>/<token>', PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
+    path('password-reset-confirm/<uidb64>/<token>', PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
 ]
 
