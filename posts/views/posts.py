@@ -1,8 +1,6 @@
 import uuid
 
 from django.utils.text import slugify
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.generics import (ListAPIView, CreateAPIView,
                                      UpdateAPIView, RetrieveDestroyAPIView)
 from rest_framework import status
