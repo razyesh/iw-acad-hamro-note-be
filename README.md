@@ -1,7 +1,11 @@
 # Hamro Notes
 
 <p align="center">
- <img width="100px" src="https://res.cloudinary.com/dhu3zenko/image/upload/v1597226777/Hamronotes/logo_vszykh.png" align="center" alt="Hamro Notes" />
+ <!-- <img width="100px" src="https://res.cloudinary.com/dhu3zenko/image/upload
+ /v1597226777/Hamronotes/logo_vszykh.png" align="center" alt="Hamro Notes
+ " /> -->
+ <img width="400px" src="./assets/Logo890x180.svg" align="center" alt="Hamro Notes
+ " />
 <p align="center">Get your necessary Univeristy Notes</p>
 
 </p>
@@ -45,17 +49,23 @@ $ source bin/activate
 $ pip install -r requirements.txt
 ```
 
-### Step 3: Configure
+### Step 3: Configure env variables
+```sh 
+$ cp .env.examle .env
+```
+Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
+
+### Step 4: Configure
 
 ```sh
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py runserver
 ```
 
 > Make sure, you know to create superuser for administration
 
-### Step 4: Running tests with coverage
+### Step 5: Running tests with coverage
 
 ```sh
 $ python manage.py test coverage
