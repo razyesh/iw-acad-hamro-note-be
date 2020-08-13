@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 
 from accounts.models.profile import Profile
@@ -132,8 +134,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-from rest_framework import serializers
-
 class ChangePasswordSerializer(serializers.Serializer):
 
     """
@@ -142,12 +142,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-from .utils import Util
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=2)
@@ -182,6 +176,6 @@ class SetNewPasswordSerializer(serializers.Serializer):
             user.save()
 
             return (user)
-        except Exception as e:
+        except Exception:
             raise AuthenticationFailed('The reset link is invalid', 401)
         return super().validate(attrs)

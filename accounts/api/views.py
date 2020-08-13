@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.generics import GenericAPIView
 from rest_framework.generics import (CreateAPIView,
                                      RetrieveAPIView,
                                      UpdateAPIView)
@@ -15,7 +16,19 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 
-from .serializers import UserRegisterSerializer, UserUpdateSerializer
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from .utils import Util
+
+from .serializers import (UserRegisterSerializer, 
+                            UserUpdateSerializer, 
+                            ChangePasswordSerializer,
+                            ResetPasswordEmailRequestSerializer, 
+                            SetNewPasswordSerializer
+                            )
 from .tokens import account_activation_token
 
 User = get_user_model()
@@ -115,8 +128,6 @@ def activate(request, uidb64, token):
         return Response(response, status=status.HTTP_401_UNAUTHORIZED)
 
 
-from .serializers import ChangePasswordSerializer
-
 class ChangePasswordView(UpdateAPIView):
     """
     An endpoint for changing password.
@@ -153,54 +164,63 @@ class ChangePasswordView(UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework.generics import GenericAPIView
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-from .utils import Util
-from .serializers import ResetPasswordEmailRequestSerializer, SetNewPasswordSerializer
 class RequestPasswordResetEmail(GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
-
         email = request.data['email']
-
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            current_site = get_current_site(
-                request=request).domain
+            current_site = get_current_site(request=request).domain
             relativeLink = reverse(
-                'accounts:password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+                                'accounts:password-reset-confirm', 
+                                kwargs={'uidb64': uidb64, 'token': token}
+                                )
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + absurl
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Reset your passsword'}
+            data = {
+                'email_body': email_body, 
+                'to_email': user.email,
+                'email_subject': 'Reset your passsword'
+                }
             Util.send_email(data)
-        return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
+        return Response(
+                    {'success': 'We have sent you a link to reset your password'},
+                    status=status.HTTP_200_OK
+                    )
 
 
 class PasswordTokenCheckAPI(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
     def get(self, request, uidb64, token):
-
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=id)
-
             if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {'error': 'Token is not valid, please request a new one'}, 
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
 
-            return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64, 'token': token}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    'success': True, 
+                    'message': 'Credentials Valid', 
+                    'uidb64': uidb64, 
+                    'token': token
+                }, 
+                status=status.HTTP_200_OK
+                )
 
         except DjangoUnicodeDecodeError:
             if not PasswordResetTokenGenerator().check_token(user,token):
-                return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {'error': 'Token is not valid, please request a new one'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
 
 
 class SetNewPasswordAPIView(GenericAPIView):
@@ -209,4 +229,7 @@ class SetNewPasswordAPIView(GenericAPIView):
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
+        return Response(
+            {'success': True, 'message': 'Password reset success'}, 
+            status=status.HTTP_200_OK
+            )

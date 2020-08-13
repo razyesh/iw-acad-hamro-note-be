@@ -1,5 +1,12 @@
 from django.urls import path, include
-from .views import UserRegistrationView, UserDetail, UserUpdate, ChangePasswordView, PasswordTokenCheckAPI, RequestPasswordResetEmail, SetNewPasswordAPIView
+from .views import (UserRegistrationView, 
+                    UserDetail, 
+                    UserUpdate, 
+                    ChangePasswordView, 
+                    PasswordTokenCheckAPI, 
+                    RequestPasswordResetEmail, 
+                    SetNewPasswordAPIView
+                    )
 from .authtoken_views import CustomObtainAuthToken
 from .views import UserRegistrationView, activate
 
