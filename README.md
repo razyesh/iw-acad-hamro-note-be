@@ -51,7 +51,7 @@ $ pip install -r requirements.txt
 
 ### Step 3: Configure env variables
 ```sh 
-$ cp .env.examle .env
+$ cp .env.example .env
 ```
 Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
 
