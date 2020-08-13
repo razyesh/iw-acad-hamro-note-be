@@ -6,7 +6,7 @@ User = get_user_model()
 
 class College(models.Model):
     college_name = models.CharField(max_length=150)
-    college_short_form = models.CharField(max_length=150, blank=True, null=True)
+    college_short_form = models.CharField(max_length=150, blank=False, null=True)
 
     def __str__(self):
         return self.college_short_form
