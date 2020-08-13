@@ -8,3 +8,5 @@ class CustomObtainAuthToken(ObtainAuthToken):
     of ObtainAuthToken
     """
     serializer_class = CustomAuthTokenSerializer
+
+
