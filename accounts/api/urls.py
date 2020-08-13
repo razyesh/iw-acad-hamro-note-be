@@ -1,12 +1,15 @@
 from django.urls import path, include
-from .views import UserRegistrationView, UserDetail, UserUpdate
+from .views import UserRegistrationView, UserDetail, UserUpdate, ChangePasswordView, PasswordTokenCheckAPI, RequestPasswordResetEmail
 from .authtoken_views import CustomObtainAuthToken
 from .views import UserRegistrationView, activate
 
 user_url = [
     path('profile', UserDetail.as_view(), name='user-profile'),
     path('update', UserUpdate.as_view(), name = 'user-update'),
-    path('activate/<uidb64>/<token>', activate, name='user-activate')
+    path('activate/<uidb64>/<token>', activate, name='user-activate'),
+    path('change-password/', ChangePasswordView.as_view(), name='change-password'),
+    path('request-reset-password/', RequestPasswordResetEmail.as_view(), name='request-reset-email'),
+    path('reset-password/<uidb64>/<token>', PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
 ]
 
 
