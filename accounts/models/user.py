@@ -39,5 +39,3 @@ class User(AbstractUser):
         ),
     )
 
-    def create_superuser(self):
-        super().create_superuser()

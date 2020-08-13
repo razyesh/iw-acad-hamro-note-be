@@ -4,7 +4,10 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
+<<<<<<< HEAD
 from rest_framework import status
+=======
+>>>>>>> 0b203affd084d774e7d3522bac164fdc889c8c87
 
 from accounts.models.profile import Profile
 from accounts.models.education import Education
