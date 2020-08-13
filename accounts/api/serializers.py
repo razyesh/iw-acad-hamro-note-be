@@ -3,6 +3,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 
 from accounts.models.profile import Profile
 from accounts.models.education import Education
@@ -175,7 +176,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
             user.set_password(password)
             user.save()
 
-            return (user)
+            return user
         except Exception:
             raise AuthenticationFailed('The reset link is invalid', 401)
-        return super().validate(attrs)
+

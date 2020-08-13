@@ -4,6 +4,9 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
+from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,18 +14,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
 from rest_framework.generics import (CreateAPIView,
                                      RetrieveAPIView,
-                                     UpdateAPIView)
+                                     UpdateAPIView, DestroyAPIView)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
 
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
 from .utils import Util
-
 from .serializers import (UserRegisterSerializer, 
                             UserUpdateSerializer, 
                             ChangePasswordSerializer,
@@ -76,6 +74,7 @@ class UserUpdate(UpdateAPIView):
 
 class UserRegistrationView(CreateAPIView):
     """API view for User Registration"""
+
     serializer_class = UserRegisterSerializer
     permission_classes = (AllowAny,)
 
@@ -126,6 +125,20 @@ def activate(request, uidb64, token):
             'message': "Either the token is expired or you are not registered yet"
         }
         return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserLogoutView(DestroyAPIView):
+    """removing the token from the database"""
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = (IsAuthenticated,)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = Token.objects.get(user=request.user)
+        self.perform_destroy(instance)
+        context = {
+            'message': "Successfully Logged Out"
+        }
+        return Response(context, status=status.HTTP_204_NO_CONTENT)
 
 
 class ChangePasswordView(UpdateAPIView):

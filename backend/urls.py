@@ -8,3 +8,5 @@ urlpatterns = [
     path('', include('accounts.urls', namespace='account')),
     path('', include('posts.urls', namespace='posts')),
 ]
+
+admin.site.site_header = 'Hamro Notes'
