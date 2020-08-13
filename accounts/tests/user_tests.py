@@ -111,14 +111,17 @@ class UserTests(APITestCase):
                 "user": 1,
                 "contact_number": "9860476499",
                 "address": "kapan",
-                "education": self.education
-            }
+                "education": self.education,
+            },
         }
         login_response = self.client.post(self.login_url, self.login_data, format="json")
+        files = {'media': open('accounts/tests/1.png', 'rb')}
+        login_response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        response = self.client.put(reverse("account:user-update"), update_data, format='json')
+        headers = "Content type: multipart/form-data"
+        response = self.client.put(reverse("account:user-update"), update_data,  files=files, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['username'], "testnotUser")
         self.assertNotEqual(response.data['username'], "testUser")
