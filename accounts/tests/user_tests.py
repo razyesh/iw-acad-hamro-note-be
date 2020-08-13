@@ -1,12 +1,17 @@
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models.education import College, University, Faculty, Education
 from accounts.api.serializers import EducationSerializer
 from rest_framework.authtoken.models import Token
+
+from accounts.api.tokens import account_activation_token
 
 User = get_user_model()
 
@@ -42,6 +47,9 @@ class UserTests(APITestCase):
             }
         }
         self.response = self.client.post(self.url, data=self.data, format='json')
+        user = User.objects.get()
+        user.is_active = True
+        user.save()
         self.login_data = {
             "email": "testuser@gmail.com",
             "password": "1234"
@@ -74,6 +82,11 @@ class UserTests(APITestCase):
             fac_short_form='TF'
         )
 
+    @staticmethod
+    def setup_user(user):
+        user.is_active = True
+        return user.save
+
     def test_user_register(self):
         """
         ensure that we can create new user with the respective
@@ -82,6 +95,15 @@ class UserTests(APITestCase):
         self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
+
+    def test_user_activation(self):
+        user = User.objects.get()
+        response = self.client.get(reverse('accounts:user-activate',
+                                           kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
+                                                   'token': account_activation_token.make_token(user)}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user.is_active = True
+        user.save()
 
     def test_user_retrieve(self):
         """
@@ -102,6 +124,7 @@ class UserTests(APITestCase):
         performing test to update the user detail
         :return:
         """
+
         update_data = {
             "username": "testnotUser",
             "email": "testnotuser@gmail.com",
@@ -119,7 +142,7 @@ class UserTests(APITestCase):
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        response = self.client.put(reverse("account:user-update"), update_data,  files=files, format="json")
+        response = self.client.put(reverse("account:user-update"), update_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['username'], "testnotUser")
         self.assertNotEqual(response.data['username'], "testUser")
