@@ -13,6 +13,9 @@ class Post(models.Model):
     file = models.FileField(upload_to='posts/files/', blank=True, null=True)
     stars_count = models.IntegerField(default=0)
 
+    class Meta:
+        ordering = ('-posted_at', )
+
     def __str__(self):
         return self.caption[:20] + '...'
 
@@ -28,4 +31,5 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment_description[:20] + '...'
 
-
+    class Meta:
+        ordering = ('-commented_at', )
