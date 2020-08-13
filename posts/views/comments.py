@@ -41,3 +41,30 @@ class RetrieveDeleteComment(RetrieveDestroyAPIView):
 
     def get_queryset(self):
         return Comment.objects.all()
+
+
+@api_view(['POST'])
+def like_comment(request, pk, action):
+    comment = Comment.objects.get(pk=pk)
+    try:
+        print(comment)
+    except comment.model.DoesNotExist:
+        return Response({'error': 'The comment does not exist.'},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        if action == 'like':
+            comment.stars_count += 1
+            comment.save()
+        elif action == 'unlike':
+            comment.stars_count -= 1
+            if comment.stars_count <= 0:
+                comment.stars_count = 0
+            comment.save()
+        else:
+            return Response({'error': f'Invalid action {action}!!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        serializer = CommentSerializer(comment)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'GET method not allowed!'},
+                    status=status.HTTP_400_BAD_REQUEST)

@@ -11,6 +11,9 @@ urlpatterns = [
          name='post_get_delete'),
     path('post/<str:post_slug>/update/', views.UpdatePost.as_view(),
          name='post_update'),
+    # like post api
+    path('post/<str:post_slug>/<str:action>/', views.like_post,
+         name='like_unlike_post'),
     # comments
     path('comment/list/', views.ListComments.as_view(), name='comment_list'),
     path('comment/create/', views.CreateComment.as_view(),
@@ -19,4 +22,6 @@ urlpatterns = [
          name='comment_update'),
     path('comment/<str:pk>/', views.RetrieveDeleteComment.as_view(),
          name='comment_get_delete'),
+    path('comment/<str:pk>/<str:action>/', views.like_comment,
+         name='like_unlike_comment'),
 ]

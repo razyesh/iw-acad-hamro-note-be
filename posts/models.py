@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 USER = get_user_model()
 
 
-class Question(models.Model):
+class Post(models.Model):
     posted_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
@@ -20,7 +20,7 @@ class Question(models.Model):
         return self.caption[:20] + '...'
 
 
-class Answer(models.Model):
+class Comment(models.Model):
     commented_at = models.DateTimeField(auto_now_add=True)
     comment_modified_at = models.DateTimeField(auto_now=True)
     comment_description = models.TextField()
