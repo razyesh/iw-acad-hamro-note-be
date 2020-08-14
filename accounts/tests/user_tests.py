@@ -159,7 +159,6 @@ class UserTests(APITestCase):
         self.assertEqual(Token.objects.count(), 1)
         self.assertEqual(Token.objects.get().key, token)
 
-<<<<<<< HEAD
     def test_user_changepassword(self):
         """
         performing test to update the user detail
@@ -243,7 +242,6 @@ class UserTests(APITestCase):
         """
         response = self.client.post(self.login_url, self.login_data, format="json")
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
-=======
     def test_user_logout(self):
         """
         performing user logout test
@@ -253,4 +251,3 @@ class UserTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.delete(reverse('accounts:user-logout'))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
->>>>>>> a3a17fd4dcd6e20a53e35a0af0e4ff8a29419c96
