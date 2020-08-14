@@ -37,7 +37,6 @@ class Education(models.Model):
     faculty = models.ForeignKey(Faculty, related_name='education_faculty', on_delete=models.PROTECT)
     university = models.ForeignKey(University, related_name='education_University', on_delete=models.PROTECT)
 
-
     def __str__(self):
         return f"year:{self.year} sem:{self.semester}"
 
