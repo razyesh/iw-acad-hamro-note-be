@@ -24,7 +24,7 @@ class Comment(models.Model):
     commented_at = models.DateTimeField(auto_now_add=True)
     comment_modified_at = models.DateTimeField(auto_now=True)
     comment_description = models.TextField()
-    # post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
     stars_count = models.IntegerField(default=0)
 
