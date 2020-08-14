@@ -82,11 +82,6 @@ class UserTests(APITestCase):
             fac_short_form='TF'
         )
 
-    @staticmethod
-    def setup_user(user):
-        user.is_active = True
-        return user.save
-
     def test_user_register(self):
         """
         ensure that we can create new user with the respective
@@ -97,6 +92,10 @@ class UserTests(APITestCase):
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
 
     def test_user_activation(self):
+        """
+        performing test whether the user activation is
+        working or not
+        """
         user = User.objects.get()
         response = self.client.get(reverse('accounts:user-activate',
                                            kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -115,7 +114,7 @@ class UserTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(reverse("account:user-profile"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response.data['email'], "testuser@gmail.com")
+        self.assertEqual(response.data.get('user').get('email'), "testuser@gmail.com")
 
     def test_user_update(self):
         """
@@ -156,3 +155,13 @@ class UserTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Token.objects.count(), 1)
         self.assertEqual(Token.objects.get().key, token)
+
+    def test_user_logout(self):
+        """
+        performing user logout test
+        """
+        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
+        token = login_response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.delete(reverse('accounts:user-logout'))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
