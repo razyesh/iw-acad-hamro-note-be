@@ -85,11 +85,6 @@ class UserTests(APITestCase):
             fac_short_form='TF'
         )
 
-    @staticmethod
-    def setup_user(user):
-        user.is_active = True
-        return user.save
-
     def test_user_register(self):
         """
         ensure that we can create new user with the respective
@@ -100,13 +95,15 @@ class UserTests(APITestCase):
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
 
     def test_user_activation(self):
+        """
+        performing test whether the user activation is
+        working or not
+        """
         user = User.objects.get()
         response = self.client.get(reverse('accounts:user-activate',
                                            kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                                                    'token': account_activation_token.make_token(user)}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        user.is_active = True
-        user.save()
 
     def test_user_retrieve(self):
         """
@@ -120,7 +117,7 @@ class UserTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(reverse("account:user-profile"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response.data['email'], "testuser@gmail.com")
+        self.assertEqual(response.data.get('user').get('email'), "testuser@gmail.com")
 
     def test_user_update(self):
         """
@@ -162,6 +159,7 @@ class UserTests(APITestCase):
         self.assertEqual(Token.objects.count(), 1)
         self.assertEqual(Token.objects.get().key, token)
 
+<<<<<<< HEAD
     def test_user_changepassword(self):
         """
         performing test to update the user detail
@@ -245,3 +243,14 @@ class UserTests(APITestCase):
         """
         response = self.client.post(self.login_url, self.login_data, format="json")
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+=======
+    def test_user_logout(self):
+        """
+        performing user logout test
+        """
+        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
+        token = login_response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.delete(reverse('accounts:user-logout'))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+>>>>>>> a3a17fd4dcd6e20a53e35a0af0e4ff8a29419c96

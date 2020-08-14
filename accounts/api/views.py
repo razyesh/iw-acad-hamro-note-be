@@ -28,6 +28,7 @@ from .serializers import (UserRegisterSerializer,
                           SetNewPasswordSerializer
                           )
 from .tokens import account_activation_token
+from accounts.models import UserFollow
 
 User = get_user_model()
 
@@ -46,8 +47,15 @@ class UserDetail(RetrieveAPIView):
         :return: JSON response of user detail
         """
         user = User.objects.get(id=request.user.id)
+        followers = UserFollow.objects.filter(follow_to=user).count()
+        following = UserFollow.objects.filter(follow_by=user).count()
         user_data = UserRegisterSerializer(user)
-        return Response(user_data.data, status=status.HTTP_302_FOUND)
+        context = {
+            'user': user_data.data,
+            'followers': followers,
+            'following': following,
+        }
+        return Response(context, status=status.HTTP_302_FOUND)
 
 
 class UserUpdate(UpdateAPIView):
@@ -66,7 +74,6 @@ class UserUpdate(UpdateAPIView):
         instance = User.objects.get(id=request.user.id)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.profile_pic = request.FILES.get('profile_pic')
-        print(request.FILES)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
