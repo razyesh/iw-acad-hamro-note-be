@@ -98,3 +98,14 @@ def like_post(request, post_slug, action):
     return Response({'error': 'GET method not allowed!'},
                     status=status.HTTP_400_BAD_REQUEST)
 
+
+class FollowedPosts(ListAPIView):
+    """
+    This is the view that returns the list of posts that are followed by the
+    person.
+    """
+    serializer_class = PostSerializer
+    pagination_class = CustomPostsPagination
+
+    def get_queryset(self):
+        return Post.objects.all()
