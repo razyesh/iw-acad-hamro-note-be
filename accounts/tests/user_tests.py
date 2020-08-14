@@ -102,8 +102,6 @@ class UserTests(APITestCase):
                                            kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                                                    'token': account_activation_token.make_token(user)}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        user.is_active = True
-        user.save()
 
     def test_user_retrieve(self):
         """
