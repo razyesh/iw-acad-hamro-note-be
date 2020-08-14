@@ -1,12 +1,17 @@
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models.education import College, University, Faculty, Education
 from accounts.api.serializers import EducationSerializer
 from rest_framework.authtoken.models import Token
+
+from accounts.api.tokens import account_activation_token
 
 User = get_user_model()
 
@@ -42,6 +47,9 @@ class UserTests(APITestCase):
             }
         }
         self.response = self.client.post(self.url, data=self.data, format='json')
+        user = User.objects.get()
+        user.is_active = True
+        user.save()
         self.login_data = {
             "email": "testuser@gmail.com",
             "password": "1234"
@@ -83,6 +91,17 @@ class UserTests(APITestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, 'testuser@gmail.com')
 
+    def test_user_activation(self):
+        """
+        performing test whether the user activation is
+        working or not
+        """
+        user = User.objects.get()
+        response = self.client.get(reverse('accounts:user-activate',
+                                           kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
+                                                   'token': account_activation_token.make_token(user)}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_user_retrieve(self):
         """
         perform test to get the detail about the currently logged
@@ -95,13 +114,14 @@ class UserTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(reverse("account:user-profile"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response.data['email'], "testuser@gmail.com")
+        self.assertEqual(response.data.get('user').get('email'), "testuser@gmail.com")
 
     def test_user_update(self):
         """
         performing test to update the user detail
         :return:
         """
+
         update_data = {
             "username": "testnotUser",
             "email": "testnotuser@gmail.com",
@@ -114,15 +134,12 @@ class UserTests(APITestCase):
                 "education": self.education,
             },
         }
-        login_response = self.client.post(self.login_url, self.login_data, format="json")
-        files = {'media': open('accounts/tests/1.png', 'rb')}
-        login_response = self.client.post(reverse("account:user-login"), self.login_data, format="json")
+        # files = {'media': open('accounts/tests/1.png', 'rb')}
         login_response = self.client.post(self.login_url, self.login_data, format="json")
         token = login_response.data['token']
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        headers = "Content type: multipart/form-data"
-        response = self.client.put(reverse("account:user-update"), update_data,  files=files, format="json")
+        response = self.client.put(reverse("account:user-update"), update_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['username'], "testnotUser")
         self.assertNotEqual(response.data['username'], "testUser")
@@ -138,3 +155,13 @@ class UserTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Token.objects.count(), 1)
         self.assertEqual(Token.objects.get().key, token)
+
+    def test_user_logout(self):
+        """
+        performing user logout test
+        """
+        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
+        token = login_response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.delete(reverse('accounts:user-logout'))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
