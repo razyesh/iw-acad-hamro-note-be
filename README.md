@@ -34,6 +34,19 @@
 
 # Installation
 
+## Method 1
+
+> Use setup.sh for automating the installation of the project
+
+```sh
+$ chmod +x setup.sh
+$ ./setup.sh
+```
+
+> Make sure your are on project directory
+
+## Method 2
+
 ### Step 1: Clone the repo
 
 ```sh
@@ -50,9 +63,11 @@ $ pip install -r requirements.txt
 ```
 
 ### Step 3: Configure env variables
-```sh 
+
+```sh
 $ cp .env.example .env
 ```
+
 Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
 
 ### Step 4: Configure
