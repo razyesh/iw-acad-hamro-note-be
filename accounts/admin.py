@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import User, Profile, Education, University, Faculty, College
+from . import models
 
-admin.site.register(User)
-admin.site.register(Profile)
-admin.site.register(Education)
-admin.site.register(University)
-admin.site.register(Faculty)
-admin.site.register(College)
+education_models = [models.Education, models.University, models.College, models.Faculty]
+user_models = [models.Profile, models.UserFollow]
+
+admin.site.register(education_models)
+admin.site.register(user_models)
