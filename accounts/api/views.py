@@ -178,6 +178,9 @@ class ChangePasswordView(UpdateAPIView):
 
 
 class RequestPasswordResetEmail(GenericAPIView):
+    """
+    API endpoint for requesting reset password.
+    """
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
@@ -206,6 +209,9 @@ class RequestPasswordResetEmail(GenericAPIView):
 
 
 class PasswordTokenCheckAPI(GenericAPIView):
+    """
+    API endpoint for checking token obtained after email has been sent to user
+    """
     serializer_class = SetNewPasswordSerializer
 
     def get(self, request, uidb64, token):
@@ -237,6 +243,9 @@ class PasswordTokenCheckAPI(GenericAPIView):
 
 
 class SetNewPasswordAPIView(GenericAPIView):
+    """
+    API endpoint for resetting new password.
+    """
     serializer_class = SetNewPasswordSerializer
 
     def patch(self, request):
