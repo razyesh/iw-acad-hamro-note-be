@@ -2,7 +2,8 @@ import uuid
 
 from django.utils.text import slugify
 from rest_framework.generics import (ListAPIView, CreateAPIView,
-                                     UpdateAPIView, RetrieveDestroyAPIView)
+                                     RetrieveUpdateAPIView,
+                                     RetrieveDestroyAPIView)
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -49,7 +50,7 @@ class CreatePost(CreateAPIView):
                         headers=headers)
 
 
-class UpdatePost(UpdateAPIView):
+class UpdatePost(RetrieveUpdateAPIView):
     """
     Retrieves and updates a new post with post_slug as url kwarg.
     """
