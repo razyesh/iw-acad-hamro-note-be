@@ -43,12 +43,33 @@ class BlogTests(TestCase):
 class SubscriberTests(TestCase):
 
    def setUp(self):
-       Subscriber.objects.create(
+       test_subscriber = Subscriber.objects.create(
            name='ram',
            email="hello@gmail.com"
        )
+       test_subscriber.save()
 
    def test_email_content(self):
        subscriber = Subscriber.objects.get(id=1)
        expected_object_name = f'{subscriber.email}'
        self.assertEquals(expected_object_name, 'hello@gmail.com')
+'''
+class CommentTests(TestCase):
+    def setUp(self):
+        test_comment = Comment.objects.create(
+                name = 'lol',
+                email = 'lol@gmail.com',
+                message = 'shai ho',
+        )
+        test_comment.save()
+
+    def test_comment(self):
+        comment = Comment.objects.get(id=1)
+        name = f'{comment.name}'
+        email = f'{comment.email}'
+        message = f'{comment.message}'
+
+        self.assertEqual(name,'lol'),
+        self.assertEqual(email,'lol@gmail.com')
+        self.assertEqual(message,'shai ho')
+'''
