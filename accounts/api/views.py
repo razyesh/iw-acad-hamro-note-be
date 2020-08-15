@@ -14,7 +14,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
 from rest_framework.generics import (CreateAPIView,
                                      RetrieveAPIView,
-                                     UpdateAPIView, DestroyAPIView)
+                                     UpdateAPIView, DestroyAPIView, ListCreateAPIView)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
@@ -25,7 +25,7 @@ from .serializers import (UserRegisterSerializer,
                           UserUpdateSerializer,
                           ChangePasswordSerializer,
                           ResetPasswordEmailRequestSerializer,
-                          SetNewPasswordSerializer
+                          SetNewPasswordSerializer, UserFollowSerializer
                           )
 from .tokens import account_activation_token
 from accounts.models import UserFollow
@@ -262,3 +262,25 @@ class SetNewPasswordAPIView(GenericAPIView):
             {'success': True, 'message': 'Password reset success'},
             status=status.HTTP_200_OK
         )
+
+
+class UserFollowAPIView(ListCreateAPIView):
+    """
+    API end point for letting user to follow each other
+    """
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = UserFollowSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        follow = UserFollow.objects.filter(follow_to=self.request.user)
+        return follow
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        context = {
+            'message': 'success',
+        }
+        return Response(context, status.HTTP_201_CREATED)

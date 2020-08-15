@@ -84,6 +84,11 @@ class UserTests(APITestCase):
             fac_short_form='TF'
         )
 
+    def get_token(self):
+        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
+        token = login_response.data['token']
+        return token
+
     def test_user_register(self):
         """
         ensure that we can create new user with the respective
@@ -109,10 +114,7 @@ class UserTests(APITestCase):
         perform test to get the detail about the currently logged
         in user
         """
-        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
-        token = login_response.data['token']
-
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
         response = self.client.get(reverse("account:user-profile"))
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertEqual(response.data.get('user').get('email'), "testuser@gmail.com")
@@ -135,10 +137,7 @@ class UserTests(APITestCase):
             },
         }
         # files = {'media': open('accounts/tests/1.png', 'rb')}
-        login_response = self.client.post(self.login_url, self.login_data, format="json")
-        token = login_response.data['token']
-
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
         response = self.client.put(reverse("account:user-update"), update_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['username'], "testnotUser")
@@ -167,10 +166,7 @@ class UserTests(APITestCase):
             "email": "testuser@gmail.com",
             "password": "123456"
         }
-        login_response = self.client.post(self.login_url, self.login_data, format="json")
-        token = login_response.data['token']
-
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
         response = self.client.patch(
             reverse("account:change-password"),
             changepassword_data,
@@ -230,11 +226,28 @@ class UserTests(APITestCase):
         response = self.client.post(self.login_url, self.login_data, format="json")
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_get_followers(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
+        response = self.client.get(reverse('accounts:user-follow-detail'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_follow_request(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
+        user2 = User.objects.create_user(
+            username='test2',
+            password='1234',
+            email="test2@gmail.com"
+        )
+        user1 = User.objects.get(id=1)
+        data = {
+            "follow_to": user1.id,
+            "follow_by": user2.id
+        }
+        response = self.client.post(reverse('accounts:user-follow-detail'), data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_user_logout(self):
         """performing user logout test"""
-
-        login_response = self.client.post(self.login_url, data=self.login_data, format="json")
-        token = login_response.data['token']
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.get_token())
         response = self.client.delete(reverse('accounts:user-logout'))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
