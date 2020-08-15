@@ -68,7 +68,14 @@ $ pip install -r requirements.txt
 $ cp .env.example .env
 ```
 
-Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
+Now, edit .env to contain 
+`DEBUG = True`
+`SECRET_KEY = <your_key>` 
+`EMAIL_USE_TLS = True` 
+`EMAIL_HOST = smtp.gmail.com`
+`EMAIL_HOST_USER = <your_gmail>`
+`EMAIL_HOST_PASSWORD = <your_gmail_password>`
+`EMAIL_PORT = 587`
 
 ### Step 4: Configure
 
@@ -78,7 +85,8 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-> Make sure, you know to create superuser for administration
+> Make sure, you know to create superuser for administration.
+> You must enable less secure access on the gmail account
 
 ### Step 5: Running tests with coverage
 
@@ -92,9 +100,21 @@ Licensed under the [MIT License](./LICENSE).
 
 ## Acknowledgements and Credits
 
-- Aju Tamang: [Aju100](https://github.com/aju100)
-- Anjal Bam: [AnjalBam](https://github.com/AnjalBam)
-- Rajesh Pandey: [rajeshpandey2053](https://github.com/rajeshpandey2053)
-- Rajesh Pudasaini: [razyesh](https://github.com/razyesh)
+<table>
+	<tr>
+		<td align="center">
+			<a href="https://github.com/Aju100"><img src="https://avatars2.githubusercontent.com/u/29862610?s=400&v=4" width="100px;" alt=""/><br /><sub><b>Aju Tamang</b></sub></a><br />
+		</td>	
+		<td align="center">
+			<a href="https://github.com/AnjalBam"><img src="https://avatars2.githubusercontent.com/u/50726466?s=400&u=1e7347041ed721299eafd73af5f391401e2f3858&v=4" width="100px;" alt=""/><br /><sub><b>Anjal Bam</b></sub></a><br />
+		</td>
+		<td align="center">
+			<a href="https://github.com/rajeshpandey2053"><img src="https://avatars0.githubusercontent.com/u/29334243?s=400&u=63afd14c253c38bb4b4eb928080a9e4bd327a66e&v=4" width="100px;" alt=""/><br /><sub><b>Rajesh Pandey</b></sub></a><br />
+		</td>
+		<td align="center">
+			<a href="https://github.com/razyesh"><img src="https://avatars3.githubusercontent.com/u/33127872?s=400&u=87e7f67c7a08dba1dec329986e5e06629b37e545&v=4" width="100px;" alt=""/><br /><sub><b>Rajesh Pudasaini</b></sub></a><br />
+		</td>
+	</tr>
+</table>
 
 > Names are sorted by Alphabet
