@@ -23,7 +23,7 @@ class CreateComment(CreateAPIView):
     serializer_class = CreateCommentSerializer
 
 
-class UpdateComment(UpdateAPIView):
+class UpdateComment(RetrieveUpdateAPIView):
     """
     This should update the comment.
     """
