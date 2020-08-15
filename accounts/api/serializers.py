@@ -6,8 +6,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
 
-from accounts.models.profile import Profile
-from accounts.models.education import Education
+from accounts.models import Profile
+from accounts.models import Education
+from accounts.models import UserFollow
 
 User = get_user_model()
 
@@ -137,7 +138,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-
     """
     Serializer for password change endpoint.
     """
@@ -188,3 +188,9 @@ class SetNewPasswordSerializer(serializers.Serializer):
             raise AuthenticationFailed('The reset link is invalid', status.HTTP_401_UNAUTHORIZED)
 
         return super().validate(attrs)
+
+
+class UserFollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserFollow
+        fields = ('follow_to', 'follow_by')
