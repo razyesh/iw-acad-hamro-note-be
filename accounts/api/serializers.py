@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
+
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
@@ -194,3 +195,11 @@ class UserFollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFollow
         fields = ('follow_to', 'follow_by')
+
+    def validate(self, attrs):
+        try:
+            UserFollow.objects.get(follow_to=attrs['follow_to'], follow_by=attrs['follow_by'])
+            raise serializers.ValidationError('You already Followed him')
+        except UserFollow.DoesNotExist:
+            return attrs
+
