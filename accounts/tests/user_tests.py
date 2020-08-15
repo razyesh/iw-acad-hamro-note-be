@@ -56,7 +56,6 @@ class UserTests(APITestCase):
             "email": "testuser@gmail.com",
             "password": "1234"
         }
-        
 
     def setup_education(self):
         return Education.objects.create(semester=1, year=2,
@@ -109,7 +108,6 @@ class UserTests(APITestCase):
         """
         perform test to get the detail about the currently logged
         in user
-        :return:
         """
         login_response = self.client.post(self.login_url, data=self.login_data, format="json")
         token = login_response.data['token']
@@ -124,7 +122,6 @@ class UserTests(APITestCase):
         performing test to update the user detail
         :return:
         """
-
         update_data = {
             "username": "testnotUser",
             "email": "testnotuser@gmail.com",
@@ -160,13 +157,11 @@ class UserTests(APITestCase):
         self.assertEqual(Token.objects.get().key, token)
 
     def test_user_changepassword(self):
-        """
-        performing test to update the user detail
-        
-        """
+        """performing test to update the user detail"""
+
         changepassword_data = {
-            "old_password" : "1234",
-            "new_password" : "123456"
+            "old_password": "1234",
+            "new_password": "123456"
         }
         updatedlogin_data = {
             "email": "testuser@gmail.com",
@@ -177,31 +172,26 @@ class UserTests(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.patch(
-            reverse("account:change-password"), 
-            changepassword_data, 
+            reverse("account:change-password"),
+            changepassword_data,
             format="json"
-            )
-        """
-            test if the response status after patch is ok or not
-        """
+        )
+
+        # test if the response status after patch is ok or not
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        """ 
-            test if user can login with new passoword
-        """
+        # test if user can login with new password
         response = self.client.post(self.login_url, updatedlogin_data, format="json")
         token = response.data.get('token')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Token.objects.count(), 1)
         self.assertEqual(Token.objects.get().key, token)
-        """
-        test if user can login with old password or not
-
-        """
+        # test if user can login with old password or not
         response = self.client.post(self.login_url, self.login_data, format="json")
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_resetpassword(self):
-        """peforming test to reset password"""
+        """performing test to reset password"""
+
         data = {
             "email": "testuser@gmail.com"
         }
@@ -221,15 +211,14 @@ class UserTests(APITestCase):
 
         self.assertEqual(resetconfirm_response.status_code, status.HTTP_200_OK)
         reset_data = {
-            "uidb64" : resetconfirm_response.data["uidb64"],
-            "token" : resetconfirm_response.data["token"],
-            "password" : "1234567"
+            "uidb64": resetconfirm_response.data["uidb64"],
+            "token": resetconfirm_response.data["token"],
+            "password": "1234567"
         }
-        resetcomplete_response = self.client.patch(reverse('account:password-reset-complete'), reset_data, format="json")
+        resetcomplete_response = self.client.patch(reverse('account:password-reset-complete'), reset_data,
+                                                   format="json")
         self.assertEqual(resetcomplete_response.status_code, status.HTTP_200_OK)
-        """
-            test if now user can login with new password
-        """
+        # test if now user can login with new password
         updatedlogin_data = {
             "email": "testuser@gmail.com",
             "password": "1234567"
@@ -237,15 +226,13 @@ class UserTests(APITestCase):
 
         response = self.client.post(self.login_url, updatedlogin_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        """
-            test if user can login with old password
-        """
+        # test if user can login with old password
         response = self.client.post(self.login_url, self.login_data, format="json")
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+
     def test_user_logout(self):
-        """
-        performing user logout test
-        """
+        """performing user logout test"""
+
         login_response = self.client.post(self.login_url, data=self.login_data, format="json")
         token = login_response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)

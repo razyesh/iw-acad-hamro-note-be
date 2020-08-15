@@ -182,7 +182,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
                 raise AuthenticationFailed('The reset link is invalid', status.HTTP_401_UNAUTHORIZED)
             user.set_password(password)
             user.save()
-            return (user)
+            return user
 
         except Exception:
             raise AuthenticationFailed('The reset link is invalid', status.HTTP_401_UNAUTHORIZED)
