@@ -5,7 +5,8 @@ from .views import (UserRegistrationView,
                     ChangePasswordView, 
                     PasswordTokenCheckAPI, 
                     RequestPasswordResetEmail, 
-                    SetNewPasswordAPIView,UserRegistrationView, activate, UserLogoutView
+                    SetNewPasswordAPIView,UserRegistrationView, activate, UserLogoutView,
+                    UserFollowAPIView
                     )
 from .authtoken_views import CustomObtainAuthToken
 
@@ -18,7 +19,8 @@ user_url = [
     path('request-reset-password/', RequestPasswordResetEmail.as_view(), name='request-reset-email'),
     path('password-reset-confirm/<uidb64>/<token>', PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
-    path('logout', UserLogoutView.as_view(), name='user-logout')
+    path('logout', UserLogoutView.as_view(), name='user-logout'),
+    path('follow/detail', UserFollowAPIView.as_view(), name='user-follow-detail')
 ]
 
 

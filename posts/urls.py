@@ -3,8 +3,11 @@ from . import views
 
 app_name = 'posts'
 urlpatterns = [
+    # explore
+    path('post/explore/', views.ListPosts.as_view(), name='posts_explore'),
 
-    path('post/list/', views.ListPosts.as_view(), name='posts_list'),
+    # posts
+    path('post/list/', views.FollowedPosts.as_view(), name='posts_list'),
     path('post/create/', views.CreatePost.as_view(), name='post_create'),
     # The below url can view and delete the post with get and delete method.
     path('post/<str:post_slug>/', views.RetrieveDeletePost.as_view(),

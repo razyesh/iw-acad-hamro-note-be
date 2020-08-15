@@ -68,7 +68,14 @@ $ pip install -r requirements.txt
 $ cp .env.example .env
 ```
 
-Now, edit .env to contain `DEBUG = True` and `SECRET_KEY = <your_key>`
+Now, edit .env to contain 
+`DEBUG = True`
+`SECRET_KEY = <your_key>` 
+`EMAIL_USE_TLS = True` 
+`EMAIL_HOST = smtp.gmail.com`
+`EMAIL_HOST_USER = <your_gmail>`
+`EMAIL_HOST_PASSWORD = <your_gmail_password>`
+`EMAIL_PORT = 587`
 
 ### Step 4: Configure
 
@@ -78,7 +85,8 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-> Make sure, you know to create superuser for administration
+> Make sure, you know to create superuser for administration.
+> You must enable less secure access on the gmail account
 
 ### Step 5: Running tests with coverage
 
