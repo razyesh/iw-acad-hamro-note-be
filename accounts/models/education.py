@@ -31,7 +31,7 @@ class Faculty(models.Model):
 class Education(models.Model):
     # SEMESTERS = [(1, 'semester 1'),(2,'semester 2'),(3,'semester 3'),(4,'semester 4'),(5,'semester 5'),(6,
     # 'semester 6'),(7,'semester 7'),(8,'semester 8')] YEARS = [(1,'year 1'),(2,'year 2'),(3,'year 3'),(4,'year 4')]
-    semester = models.IntegerField()
+    semester = models.IntegerField(blank=True, null=True)
     year = models.IntegerField()
     college = models.CharField(max_length=30)
     faculty = models.ForeignKey(Faculty, related_name='education_faculty', on_delete=models.PROTECT)
